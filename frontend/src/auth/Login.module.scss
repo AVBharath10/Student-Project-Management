@@ -1,0 +1,73 @@
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
+  padding: 20px;
+  box-sizing: border-box; /* Include padding in width/height */
+  background: black; /* Light background */
+}
+
+.formWrapper {
+  background: #1e1e1e; /* Slightly lighter dark container */
+  padding: 2.5rem;
+  border-radius: 16px;
+  border: 1px solid #333; /* Subtle border */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 400px;
+}
+
+.title {
+  color: #fff; /* White text */
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+label {
+  color: #ccc; /* Light gray labels */
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.inputField {
+  padding: 0.8rem 1rem;
+  background: #2d2d2d; /* Dark input background */
+  border: 1px solid #444; /* Visible border */
+  border-radius: 8px;
+  font-size: 1rem;
+  color: white; /* White text */
+  transition: all 0.2s;
+  
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+  }
+}
+
+.submitButton {
+  background: #667eea;
+  color: white;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+  
+  &:hover {
+    background: #5a67d8;
+  }
+}

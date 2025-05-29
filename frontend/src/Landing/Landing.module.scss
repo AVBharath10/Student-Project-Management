@@ -1,0 +1,90 @@
+// src/pages/Landing/Landing.module.scss
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #4361ee;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 5rem auto 0;
+  gap: 4rem;
+}
+
+.content {
+  flex: 1;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #2b2d42;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #4a5568;
+  margin-bottom: 2.5rem;
+  max-width: 500px;
+}
+
+.ctaContainer {
+  display: flex;
+  gap: 1rem;
+}
+
+.primaryButton {
+  display: inline-block;
+  background: #4361ee;
+  color: white;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: #3a56d4;
+  }
+}
+
+.secondaryButton {
+  display: inline-block;
+  border: 2px solid #4361ee;
+  color: #4361ee;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: rgba(67, 97, 238, 0.1);
+  }
+}
+
+.illustration {
+  flex: 1;
+  min-height: 400px;
+  background: url('./illustration.svg') no-repeat center;
+  background-size: contain;
+}
