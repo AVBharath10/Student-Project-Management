@@ -1,3 +1,4 @@
+Collaborative Project Management Tool for Students
 📝 Project Overview
 A full-stack web application designed specifically for students to efficiently manage group projects and academic assignments in one centralized platform. This tool solves the fragmentation of using multiple disconnected apps (WhatsApp, Trello, Google Docs) by providing all essential collaboration features in one place.
 
