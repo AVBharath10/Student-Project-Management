@@ -33,7 +33,7 @@ export default function Landing() {
             animate={{ y: 0 }}
             className={styles.title}
           >
-            Collaborate. Manage. Succeed.
+            Collaborate. Manage. <span className={styles.highlight}>Succeed.</span>
           </motion.h1>
           <p className={styles.subtitle}>
             The ultimate academic project management tool for student teams

@@ -1,8 +1,9 @@
 // src/pages/Landing/Landing.module.scss
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
   padding: 2rem;
+  color: #e0e0e0;
 }
 
 .header {
@@ -16,7 +17,8 @@
 .logo {
   font-size: 2rem;
   font-weight: 700;
-  color: #4361ee;
+  color: #bb86fc;
+  text-shadow: 0 0 10px rgba(187, 134, 252, 0.3);
 }
 
 .hero {
@@ -35,14 +37,18 @@
 .title {
   font-size: 3rem;
   font-weight: 800;
-  color: #2b2d42;
+  color: #ffffff;
   margin-bottom: 1.5rem;
   line-height: 1.2;
+  
+  .highlight {
+    color: #bb86fc;
+  }
 }
 
 .subtitle {
   font-size: 1.2rem;
-  color: #4a5568;
+  color: #a0a0a0;
   margin-bottom: 2.5rem;
   max-width: 500px;
 }
@@ -54,23 +60,26 @@
 
 .primaryButton {
   display: inline-block;
-  background: #4361ee;
-  color: white;
+  background: #bb86fc;
+  color: #121212;
   padding: 0.8rem 2rem;
   border-radius: 8px;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
   
   &:hover {
-    background: #3a56d4;
+    background: #a56af0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(187, 134, 252, 0.4);
   }
 }
 
 .secondaryButton {
   display: inline-block;
-  border: 2px solid #4361ee;
-  color: #4361ee;
+  border: 2px solid #bb86fc;
+  color: #bb86fc;
   padding: 0.8rem 2rem;
   border-radius: 8px;
   font-weight: 600;
@@ -78,7 +87,8 @@
   transition: all 0.2s;
   
   &:hover {
-    background: rgba(67, 97, 238, 0.1);
+    background: rgba(187, 134, 252, 0.1);
+    transform: translateY(-2px);
   }
 }
 
@@ -87,4 +97,31 @@
   min-height: 400px;
   background: url('./illustration.svg') no-repeat center;
   background-size: contain;
+  filter: invert(90%) hue-rotate(180deg) brightness(0.9);
+}
+
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    margin-top: 2rem;
+  }
+  
+  .title {
+    font-size: 2.2rem;
+  }
+  
+  .subtitle {
+    margin: 0 auto 2rem;
+  }
+  
+  .ctaContainer {
+    justify-content: center;
+  }
+  
+  .illustration {
+    min-height: 300px;
+    width: 100%;
+    margin-top: 2rem;
+  }
 }

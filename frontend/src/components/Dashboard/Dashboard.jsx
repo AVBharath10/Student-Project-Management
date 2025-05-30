@@ -1,5 +1,5 @@
 // src/Dashboard/Dashboard.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebase";
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import styles from './Dashboard.module.scss';
 function Dashboard() {
   const navigate = useNavigate();
   const user = auth.currentUser;
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -16,6 +17,10 @@ function Dashboard() {
     } catch (error) {
       console.error("Logout error:", error);
     }
+  };
+
+  const toggleProfileDropdown = () => {
+    setShowProfileDropdown(!showProfileDropdown);
   };
 
   return (
@@ -46,9 +51,50 @@ function Dashboard() {
       <div className={styles.mainContent}>
         <header className={styles.header}>
           <h1>Welcome back, {user?.displayName || user?.email?.split('@')[0] || 'User'}!</h1>
-          <div className={styles.searchBar}>
-            <input type="text" placeholder="Search..." />
-            <i className="fas fa-search"></i>
+          <div className={styles.headerRight}>
+            <div className={styles.searchBar}>
+              <input type="text" placeholder="Search..." />
+              <i className="fas fa-search"></i>
+            </div>
+            <div className={styles.profileIconContainer} onClick={toggleProfileDropdown}>
+              {user?.photoURL ? (
+                <img src={user.photoURL} alt="Profile" className={styles.profileIcon} />
+              ) : (
+                <div className={styles.profileIcon}>
+                  {user?.email?.charAt(0).toUpperCase()}
+                </div>
+              )}
+              {showProfileDropdown && (
+                <div className={styles.profileDropdown}>
+                  <div className={styles.profileInfo}>
+                    <h3>{user?.displayName || user?.email?.split('@')[0]}</h3>
+                    <p>{user?.email}</p>
+                  </div>
+                  <div className={styles.profileStats}>
+                    <div className={styles.statItem}>
+                      <span>Projects</span>
+                      <strong>5</strong>
+                    </div>
+                    <div className={styles.statItem}>
+                      <span>Teams</span>
+                      <strong>3</strong>
+                    </div>
+                    <div className={styles.statItem}>
+                      <span>Tasks</span>
+                      <strong>12</strong>
+                    </div>
+                  </div>
+                  <div className={styles.dropdownMenu}>
+                    <button onClick={() => navigate('/profile')}>
+                      <i className="fas fa-user"></i> View Profile
+                    </button>
+                    <button onClick={handleLogout}>
+                      <i className="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
@@ -93,49 +139,6 @@ function Dashboard() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Profile Sidebar */}
-      <div className={styles.profileSidebar}>
-        <div className={styles.profileHeader}>
-          <div className={styles.avatarLarge}>
-            {user?.photoURL ? (
-              <img src={user.photoURL} alt="Profile" />
-            ) : (
-              <span>{user?.email?.charAt(0).toUpperCase()}</span>
-            )}
-          </div>
-          <h3>{user?.displayName || user?.email?.split('@')[0]}</h3>
-          <p>{user?.email}</p>
-        </div>
-
-        <div className={styles.profileStats}>
-          <div className={styles.statItem}>
-            <span>Projects</span>
-            <strong>5</strong>
-          </div>
-          <div className={styles.statItem}>
-            <span>Teams</span>
-            <strong>3</strong>
-          </div>
-          <div className={styles.statItem}>
-            <span>Tasks</span>
-            <strong>12</strong>
-          </div>
-        </div>
-
-        <div className={styles.upcomingTasks}>
-          <h4>Upcoming Tasks</h4>
-          <ul>
-            <li>Complete project proposal</li>
-            <li>Team meeting at 3PM</li>
-            <li>Review design mockups</li>
-          </ul>
-        </div>
-
-        <button onClick={handleLogout} className={styles.logoutButton}>
-          <i className="fas fa-sign-out-alt"></i> Logout
-        </button>
       </div>
     </div>
   );
