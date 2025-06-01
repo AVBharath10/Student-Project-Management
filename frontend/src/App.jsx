@@ -8,6 +8,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import Dashboard from "./components/Dashboard/Dashboard";
 import React, { useState, useEffect } from 'react';
+import Projects from "./components/Dashboard/Projects/Projects";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -36,6 +37,8 @@ function App() {
             path="/dashboard" 
             element={user ? <Dashboard /> : <Navigate to="/login" />} 
           />
+          // Add this to your routes
+<Route path="/projects" element={<Projects />} />
         </Routes>
       </AnimatePresence>
     </Router>

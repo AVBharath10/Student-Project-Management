@@ -385,6 +385,159 @@
     }
   }
 }
+// Add Project Modal Styles
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  
+  .modal {
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    padding: 25px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+    
+    h3 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #bb86fc;
+    }
+    
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 6px;
+      border: 1px solid #333;
+      background-color: #252525;
+      color: #e0e0e0;
+      font-size: 14px;
+      margin-bottom: 20px;
+      
+      &:focus {
+        outline: none;
+        border-color: #bb86fc;
+      }
+      
+      &::placeholder {
+        color: #7f7f7f;
+      }
+    }
+    
+    .modalButtons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      
+      button {
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        
+        &.cancelButton {
+          background-color: #252525;
+          color: #e0e0e0;
+          border: 1px solid #333;
+          
+          &:hover {
+            background-color: #333;
+          }
+        }
+        
+        &.confirmButton {
+          background-color: #bb86fc;
+          color: #121212;
+          
+          &:hover {
+            background-color: darken(#bb86fc, 10%);
+          }
+          
+          &:disabled {
+            background-color: #7f7f7f;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+  }
+}
+
+// No Projects State
+.noProjects {
+  text-align: center;
+  padding: 40px 20px;
+  grid-column: 1 / -1;
+  
+  p {
+    color: #7f7f7f;
+    margin-bottom: 20px;
+  }
+  
+  .addButton {
+    background-color: #bb86fc;
+    color: #121212;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    
+    &:hover {
+      background-color: darken(#bb86fc, 10%);
+    }
+    
+    i {
+      font-size: 14px;
+    }
+  }
+}
+
+// Section Header with Add Button
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  
+  .addButton {
+    background-color: #bb86fc;
+    color: #121212;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    
+    &:hover {
+      background-color: darken(#bb86fc, 10%);
+    }
+    
+    i {
+      font-size: 12px;
+    }
+  }
+}
 
 // Main content styles
 .mainContent {
