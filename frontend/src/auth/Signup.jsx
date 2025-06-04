@@ -1,32 +1,48 @@
 import { motion } from "framer-motion";
 import styles from "./Signup.module.scss";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
 
 export default function Signup() {
+  const navigate = useNavigate();
+
   const handleSignup = async (e) => {
     e.preventDefault();
-    const email = e.target.email.value;
+    const email = e.target.email.value.toLowerCase().trim();
     const password = e.target.password.value;
-    
+    const displayName = e.target.name?.value || "";
+
     try {
+      // 1. Create auth user
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      
+
+      // 2. Update auth profile (optional)
+      if (displayName) {
+        await updateProfile(user, { displayName });
+      }
+
+      // 3. Create user document in Firestore
       await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
         email: email,
-        createdAt: new Date(),
+        displayName: displayName,
+        photoURL: "",
+        createdAt: serverTimestamp(),
+        lastLoginAt: serverTimestamp(),
+        projects: [] // Initialize empty projects array
       });
-      // Auth state change will be handled by App.jsx
+
+      navigate("/"); // Redirect after successful signup
+
     } catch (error) {
-      console.error("Error during signup:", error);
-      alert(error.message);
+      console.error("Signup error:", error);
+      alert(error.message.replace("Firebase: ", ""));
     }
   };
+
   return (
     <motion.div 
       className={styles.signupContainer}
@@ -46,7 +62,16 @@ export default function Signup() {
         
         <form onSubmit={handleSignup} className={styles.form}>
           <div className={styles.inputGroup}>
-            <label htmlFor="email">Email</label>
+            <label htmlFor="name">Name (Optional)</label>
+            <input 
+              type="text" 
+              id="name" 
+              className={styles.inputField}
+            />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label htmlFor="email">Email*</label>
             <input 
               type="email" 
               id="email" 
@@ -56,13 +81,13 @@ export default function Signup() {
           </div>
           
           <div className={styles.inputGroup}>
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Password* (min 6 characters)</label>
             <input 
               type="password" 
               id="password" 
               required 
-              className={styles.inputField}
               minLength="6"
+              className={styles.inputField}
             />
           </div>
           

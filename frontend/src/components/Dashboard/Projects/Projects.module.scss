@@ -208,6 +208,90 @@
     color: white;
   }
 }
+// Add these styles to your Projects.module.scss
+
+.teamMembers {
+  display: flex;
+  margin-top: 1rem;
+  align-items: center;
+}
+
+.memberAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #7e5bef;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  margin-right: -8px;
+  border: 2px solid #1e1e1e;
+}
+
+.moreMembers {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #2d2d2d;
+  color: #b0b0b0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  margin-left: 4px;
+}
+
+.inviteButton {
+  background-color: #7e5bef;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #6d4ad6;
+    transform: translateY(-1px);
+  }
+}
+
+.emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+  color: #b0b0b0;
+  background: #1e1e1e;
+  border-radius: 10px;
+  border: 1px dashed #2d2d2d;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #b0b0b0;
+
+  .spinner {
+    border: 4px solid rgba(126, 91, 239, 0.2);
+    border-top: 4px solid #7e5bef;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
 .modalButtons {
   .cancelButton {

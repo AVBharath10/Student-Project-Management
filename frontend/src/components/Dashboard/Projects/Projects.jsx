@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, query, where, doc, onSnapshot, deleteDoc, addDoc, serverTimestamp } from 'firebase/firestore';
+import { 
+  collection, query, where, doc, onSnapshot, 
+  deleteDoc, addDoc, serverTimestamp, updateDoc,
+  getDocs, arrayUnion 
+} from 'firebase/firestore';
 import { db, auth } from '../../../../firebase';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,9 +16,13 @@ function Projects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddProjectModal, setShowAddProjectModal] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [currentProject, setCurrentProject] = useState(null);
   const [newProjectName, setNewProjectName] = useState('');
+  const [inviteEmail, setInviteEmail] = useState('');
   const [deletingId, setDeletingId] = useState(null);
   const [isAddingProject, setIsAddingProject] = useState(false);
+  const [isSendingInvite, setIsSendingInvite] = useState(false);
 
   // Fetch projects data
   useEffect(() => {
@@ -26,7 +34,7 @@ function Projects() {
     setLoading(true);
     const projectsQuery = query(
       collection(db, 'projects'),
-      where('userId', '==', user.uid)
+      where('teamMembers', 'array-contains', user.uid)
     );
 
     const unsubscribe = onSnapshot(
@@ -74,6 +82,72 @@ function Projects() {
       toast.error("Failed to create project");
     } finally {
       setIsAddingProject(false);
+    }
+  };
+
+  const handleSendInvite = async () => {
+    if (!inviteEmail.trim()) {
+      toast.warning("Please enter an email address");
+      return;
+    }
+
+    setIsSendingInvite(true);
+    try {
+      // Find user by email
+      const usersQuery = query(
+        collection(db, 'users'),
+        where('email', '==', inviteEmail.trim().toLowerCase())
+      );
+      const querySnapshot = await getDocs(usersQuery);
+
+      if (querySnapshot.empty) {
+        toast.error("User with this email not found");
+        return;
+      }
+
+      const invitedUser = querySnapshot.docs[0].data();
+      
+      // Check if already a member
+      if (currentProject.teamMembers.includes(invitedUser.uid)) {
+        toast.warning("This user is already a team member");
+        return;
+      }
+
+      // Check if invitation already exists
+      const invitesQuery = query(
+        collection(db, 'invites'),
+        where('projectId', '==', currentProject.id),
+        where('toUserId', '==', invitedUser.uid),
+        where('status', '==', 'pending')
+      );
+      const existingInvites = await getDocs(invitesQuery);
+
+      if (!existingInvites.empty) {
+        toast.warning("Invitation already sent to this user");
+        return;
+      }
+
+      // Create invitation
+      await addDoc(collection(db, 'invites'), {
+        projectId: currentProject.id,
+        projectName: currentProject.name,
+        fromUserId: user.uid,
+        fromUserEmail: user.email,
+        toUserId: invitedUser.uid,
+        toUserEmail: invitedUser.email,
+        status: 'pending',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      toast.success(`Invitation sent to ${invitedUser.email}`);
+      setInviteEmail('');
+      setShowInviteModal(false);
+    } catch (error) {
+      console.error("Error sending invitation:", error);
+      toast.error("Failed to send invitation");
+    } finally {
+      setIsSendingInvite(false);
     }
   };
 
@@ -160,8 +234,22 @@ function Projects() {
                   </div>
                   <span>{project.progress || 0}% complete</span>
                 </div>
+                <div className={styles.teamMembers}>
+                  <span>Team Members: {project.teamMembers?.length || 1}</span>
+                </div>
               </div>
               <div className={styles.projectActions}>
+                <button 
+                  className={styles.inviteButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentProject(project);
+                    setShowInviteModal(true);
+                  }}
+                  title="Invite team member"
+                >
+                  <i className="fas fa-user-plus"></i>
+                </button>
                 <button 
                   className={styles.editButton}
                   onClick={(e) => {
@@ -226,6 +314,47 @@ function Projects() {
                     </>
                   ) : (
                     'Create Project'
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Invite Team Member Modal */}
+      {showInviteModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowInviteModal(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <h3>Invite to {currentProject?.name}</h3>
+            <div className={styles.modalContent}>
+              <input
+                type="email"
+                placeholder="Enter user's email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSendInvite()}
+                autoFocus
+              />
+              <div className={styles.modalButtons}>
+                <button 
+                  className={styles.cancelButton}
+                  onClick={() => setShowInviteModal(false)}
+                  disabled={isSendingInvite}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className={styles.confirmButton}
+                  onClick={handleSendInvite}
+                  disabled={!inviteEmail.trim() || isSendingInvite}
+                >
+                  {isSendingInvite ? (
+                    <>
+                      <i className="fas fa-spinner fa-spin"></i> Sending...
+                    </>
+                  ) : (
+                    'Send Invitation'
                   )}
                 </button>
               </div>

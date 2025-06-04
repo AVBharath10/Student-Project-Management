@@ -1,27 +1,36 @@
 import { motion } from "framer-motion";
 import styles from "./Login.module.scss";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase";
+import { signInWithEmailAndPassword, updateCurrentUser } from "firebase/auth";
+import { auth, db } from "../../firebase";
+import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
 
 export default function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const email = e.target.email.value;
+    const email = e.target.email.value.toLowerCase().trim();
     const password = e.target.password.value;
-    
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // Auth state change will be handled by App.jsx
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Update last login timestamp
+      await updateDoc(doc(db, "users", user.uid), {
+        lastLoginAt: serverTimestamp()
+      });
+
+      navigate("/"); // Redirect to dashboard
+
     } catch (error) {
-      console.error(error);
-      alert(error.message);
+      console.error("Login error:", error);
+      alert(error.message.replace("Firebase: ", ""));
     }
-  };  return (
+  };
+
+  return (
     <motion.div 
       className={styles.loginContainer}
       initial={{ opacity: 0 }}
