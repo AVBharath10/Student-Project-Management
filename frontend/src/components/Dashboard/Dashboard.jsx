@@ -1,9 +1,9 @@
-// src/Dashboard/Dashboard.jsx
+// src/components/Dashboard/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
 import { signOut } from "firebase/auth";
 import { auth, db } from "../../../firebase";
-import { useNavigate } from 'react-router-dom';
-import { collection, query, where, getDocs, addDoc, doc, onSnapshot } from 'firebase/firestore';
+import { useNavigate, Outlet } from 'react-router-dom';
+import { collection, query, where, getDocs, addDoc, onSnapshot } from 'firebase/firestore';
 import styles from './Dashboard.module.scss';
 
 function Dashboard() {
@@ -16,12 +16,10 @@ function Dashboard() {
   const [newProjectName, setNewProjectName] = useState('');
   const [showAddProjectModal, setShowAddProjectModal] = useState(false);
 
-  // Fetch user data
   useEffect(() => {
     if (!user) return;
 
     const fetchUserData = async () => {
-      // Projects subscription
       const projectsQuery = query(
         collection(db, 'projects'),
         where('userId', '==', user.uid)
@@ -34,7 +32,6 @@ function Dashboard() {
         setProjects(projectsData);
       });
 
-      // Teams subscription
       const teamsQuery = query(
         collection(db, 'teams'),
         where('members', 'array-contains', user.uid)
@@ -47,7 +44,6 @@ function Dashboard() {
         setTeams(teamsData);
       });
 
-      // Tasks subscription
       const tasksQuery = query(
         collection(db, 'tasks'),
         where('assignedTo', '==', user.uid)
@@ -85,7 +81,7 @@ function Dashboard() {
 
   const handleAddProject = async () => {
     if (!newProjectName.trim()) return;
-    
+
     try {
       await addDoc(collection(db, 'projects'), {
         name: newProjectName,
@@ -102,7 +98,6 @@ function Dashboard() {
     }
   };
 
-  // Calculate upcoming deadlines (tasks due in the next 7 days)
   const upcomingDeadlines = tasks.filter(task => {
     if (!task.dueDate) return false;
     const dueDate = task.dueDate.toDate();
@@ -112,7 +107,6 @@ function Dashboard() {
     return dueDate >= today && dueDate <= nextWeek;
   }).length;
 
-  // Get unique team members across all teams
   const teamMembersCount = new Set(
     teams.flatMap(team => team.members)
   ).size;
@@ -126,16 +120,16 @@ function Dashboard() {
           <button className={styles.active}>
             <i className="fas fa-home"></i> Dashboard
           </button>
-          <button onClick={()=>navigate('/projects')}>
+          <button onClick={() => navigate('/dashboard/projects')}>
             <i className="fas fa-tasks"></i> Projects
           </button>
-          <button>
+          <button onClick={() => navigate('/dashboard/calendar')}>
             <i className="fas fa-calendar-alt"></i> Calendar
           </button>
-          <button>
+          <button onClick={() => navigate('/dashboard/teams')}>
             <i className="fas fa-users"></i> Teams
           </button>
-          <button>
+          <button onClick={() => navigate('/dashboard/settings')}>
             <i className="fas fa-cog"></i> Settings
           </button>
         </nav>
@@ -193,7 +187,6 @@ function Dashboard() {
         </header>
 
         <div className={styles.contentGrid}>
-          {/* Stats Cards */}
           <div className={styles.statsContainer}>
             <div className={styles.statCard}>
               <h3>Active Projects</h3>
@@ -212,7 +205,6 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Recent Projects */}
           <div className={styles.projectsSection}>
             <div className={styles.sectionHeader}>
               <h2>Recent Projects</h2>
@@ -236,7 +228,7 @@ function Dashboard() {
                     {project.teamMembers?.slice(0, 3).map((memberId, index) => (
                       <div key={index} className={styles.avatar}>
                         {memberId === user.uid ? 
-                          (user?.email?.charAt(0).toUpperCase() ): 
+                          (user?.email?.charAt(0).toUpperCase()) : 
                           String.fromCharCode(65 + index)}
                       </div>
                     ))}
@@ -260,6 +252,8 @@ function Dashboard() {
             </div>
           </div>
         </div>
+
+        <Outlet /> {/* ✅ This allows nested routes to render inside Dashboard */}
       </div>
 
       {/* Add Project Modal */}
